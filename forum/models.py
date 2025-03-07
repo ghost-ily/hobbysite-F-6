@@ -14,14 +14,15 @@ class PostCategory(models.Model):
         
 
 class Post(models.Model):
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     entry = models.TextField()
     createdOn = models.DateTimeField()
     updatedOn = models.DateTimeField()
     category = models.ForeignKey(
         PostCategory,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        related_name='categories'
     )
     
     class Meta:
@@ -29,4 +30,7 @@ class Post(models.Model):
         
     def __str__(self):
         return self.name
+        
+    def get_absolute_url(self):
+        return reverse('forum:detail', args=[self.pk])
     
