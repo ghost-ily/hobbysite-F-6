@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h2>{{ commission.title }}</h2>
+    <p>{{ commission.description }}</p>
+    <p><strong>People Required:</strong> {{ commission.people_required }}</p>
+    <p><strong>Created On:</strong> {{ commission.created_on|date:"F j, Y" }}</p>
+
+    <h3>Comments</h3>
+    <ul>
+        {% for comment in commission.comment_set.all %}
+            <li>
+                <p>{{ comment.entry }}</p>
+                <small>Posted on {{ comment.created_on|date:"F j, Y H:i" }}</small>
+            </li>
+        {% empty %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
