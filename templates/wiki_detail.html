@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>{{ article.title }}</h2>
+<ul>
+    <p>
+        Category:
+        <a href="/wiki/articles/{{article.category.id}}/">{{ article.category.name }}</a>
+    </p>
+    <p>
+        {{article.entry}}
+    </p>
+</ul>
+{% endblock %}

@@ -9,8 +9,8 @@
     </p>
     <p></p>
     <p>Articles:</p>
-    {% for commission in commissions %}
-    <li><a href="/wiki/detail/{{article.id}}/">{{ article.title }}</a></li>
+    {% for article in category. %}
+    <li><a href="/wiki/article/{{article.id}}/">{{ article.title }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
