@@ -32,5 +32,5 @@ class Post(models.Model):
         return self.name
         
     def get_absolute_url(self):
-        return reverse('forum:detail', args=[self.pk])
+        return reverse('forum:post_detail', args=[self.pk])
     
