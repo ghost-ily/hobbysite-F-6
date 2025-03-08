@@ -2,3 +2,15 @@
 {% load static %}
 
 {% block content %}
+<h2>{{ category.name }}</h2>
+<ul>
+    <p>
+        {{ category.description }}
+    </p>
+    <p></p>
+    <p>Articles:</p>
+    {% for commission in commissions %}
+    <li><a href="/wiki/detail/{{article.id}}/">{{ article.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
