@@ -2,7 +2,13 @@
 {% load static %}
 
 {% block content %}
-<h2>Interests Articles List</h2>
+<h2>Interests Category</h2>
+<ul>
+    {% for article in articles|slice:":1" %}
+    <p>{{article.category.description}}</p>
+    {% endfor %}
+</ul>
+    <h3>Articles:</h3>
 <ul>
     <p></p>
     {% for article in articles %}
