@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ article.title }}</h1>
+
+    <p>DEBUG:</p>
+    <ul>
+        <li>Title: {{ article.title }}</li>
+        <li>Entry: {{ article.entry }}</li>
+        <li>Created on: {{ article.created_on }}</li>
+        <li>Updated on: {{ article.updated_on }}</li>
+        <li>Category: {{ article.category.name|default:"No category" }}</li>
+    </ul>
+    
+    <p>Category: {{ article.category.name }}</p>
+    <p>Created on: {{ article.created_on }}</p> 
+    <p>Updated on: {{ article.updated_on }}</p>
+
+    <p>{{ article.entry }}</p>
+
+    <a href="{% url 'article-list' %}">Back to Articles</a>
+{% endblock %}
