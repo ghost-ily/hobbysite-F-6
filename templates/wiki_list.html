@@ -2,15 +2,11 @@
 {% load static %}
 
 {% block content %}
-<h2>{{ category.name }}</h2>
+<h2>Category List</h2>
 <ul>
-    <p>
-        {{ category.description }}
-    </p>
     <p></p>
-    <p>Articles:</p>
-    {% for article in category. %}
-    <li><a href="/wiki/article/{{article.id}}/">{{ article.title }}</a></li>
+    {% for article in articles %}
+    <li><a href="/wiki/detail/{{article.id}}/">{{ article.title }}</a> ({{article.category.name}})</li>
     {% endfor %}
 </ul>
 {% endblock %}

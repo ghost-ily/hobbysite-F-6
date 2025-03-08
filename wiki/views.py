@@ -3,9 +3,9 @@ from django.views.generic import ListView, DetailView
 from .models import ArticleCategory, Article
 
 class ArticleCatergoryView(ListView):
-    model = ArticleCategory
+    model = Article
     template_name = 'wiki_list.html'
-    context_object_name = 'category'
+    context_object_name = 'articles'
 
 class ArticleView(DetailView):
     model = Article

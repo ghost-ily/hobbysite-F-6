@@ -5,9 +5,10 @@
 <h2>{{ article.title }}</h2>
 <ul>
     <p>
-        Category:
-        <a href="/wiki/articles/{{article.category.id}}/">{{ article.category.name }}</a>
+        <a href="/wiki/articles/">Category</a> :{{ article.category.name }}
     </p>
+    <p>Article Created On: {{article.created_on}}</p>
+    <p>Last Updated: {{article.updated_on}}</p>
     <p>
         {{article.entry}}
     </p>
