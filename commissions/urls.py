@@ -5,5 +5,5 @@ app_name = 'commissions'
 
 urlpatterns = [
     path('list/', CommissionListView.as_view(), name='commission-list'),
-    path('detail/<int:pk>/', CommissionDetailView.as_view(), name='commission-detail'),
+    path('list/detail/<int:pk>/', CommissionDetailView.as_view(), name='commission-detail'),
 ]

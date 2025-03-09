@@ -9,7 +9,7 @@
 
     <h3>Comments</h3>
     <ul>
-        {% for comment in commission.comment_set.all %}
+        {% for comment in commission.comments.all %}
             <li>
                 <p>{{ comment.entry }}</p>
                 <small>Posted on {{ comment.created_on|date:"F j, Y H:i" }}</small>
