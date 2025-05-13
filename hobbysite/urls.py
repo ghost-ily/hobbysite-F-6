@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('forum.urls', namespace='forum')),
     path('commissions/', include('commissions.urls')),
-    path('', include('blog.urls'))
+    path('', include('blog.urls')),
+    path('accounts/', include('django.contrib.auth.urls'))
 ]
