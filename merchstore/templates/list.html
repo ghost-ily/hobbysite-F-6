@@ -7,6 +7,20 @@
 <h2>
     Our Hobby Site Merchandise!
 </h2>
+
+{% if request.user.is_authenticated %}
+    <a href="/merchstore/item/create">Sell your own product!</a>
+
+    <h3>Your Products</h3>
+    <ul>
+        {% for product in object_list %}
+            {% if product.%}
+            <li>
+                <a href="{{ product.get_absolute_url }}">{{ product }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
     <ul>
         {% for product in object_list %}
         <li>

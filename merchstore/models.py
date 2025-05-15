@@ -42,7 +42,7 @@ class Product(models.Model):
         ordering = ['name']
     
     def set_product_status(self):
-        if self.stock == 0:
+        if self.object.filter(pk=self.pk).get(self.stock) == 0:
             self.status = self.State.UNAVAILABLE
             self.save()
         else:

@@ -43,5 +43,16 @@ class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'create.html'
 
+    def get_success_url(self):
+        return reverse_lazy('merchstore:detail', kwargs={"pk" : self.kwargs["pk"]})
+
+class CartListView(ListView):
+    model = Transaction
+    template_name = 'cartlist.html'
+
+class TransactionListView(ListView):
+    model = Transaction
+    template_name = 'transactionlist.html'
+
 def index(request):
-    return HttpResponse('Hello world! Go to /merchstore/items to begin.')
+    return HttpResponse('Welcome to the Hobbysite F-6 Merchstore! Go to /merchstore/items to begin.')
