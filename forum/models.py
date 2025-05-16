@@ -18,9 +18,7 @@ class Thread(models.Model):
     title = models.CharField(max_length=255)
     entry = models.TextField()
     createdOn = models.DateTimeField(auto_now_add=True)
-    updatedOn = models.DateTimeField(auto_now=True
-    
-    )
+    updatedOn = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(
         PostCategory,
         on_delete=models.SET_NULL,
