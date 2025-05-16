@@ -2,23 +2,25 @@ from django.db import models
 from django.urls import reverse
 
 
-class PostCategory(models.Model):
+class ThreadCategory(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     
     class Meta:
         ordering = ['name']
-        verbose_name_plural = 'Post Categories'
+        verbose_name_plural = 'Thread Categories'
         
     def __str__(self):
         return self.name
         
 
-class Post(models.Model):
+class Thread(models.Model):
     title = models.CharField(max_length=255)
     entry = models.TextField()
-    createdOn = models.DateTimeField()
-    updatedOn = models.DateTimeField()
+    createdOn = models.DateTimeField(auto_now_add=True)
+    updatedOn = models.DateTimeField(auto_now=True
+    
+    )
     category = models.ForeignKey(
         PostCategory,
         on_delete=models.SET_NULL,
