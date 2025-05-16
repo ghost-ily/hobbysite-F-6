@@ -35,3 +35,15 @@ class Thread(models.Model):
     def get_absolute_url(self):
         return reverse('forum:post_detail', args=[self.pk])
     
+
+class Comment(models.Model):
+    thread = models.ForeignKey(
+        Thread,
+        on_delete=models.CASCASDE
+    )
+    entry = models.TextField()
+    createdOn = models.DateTimeField(auto_now_add=True)
+    updatedOn = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['createdOn']
