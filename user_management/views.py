@@ -11,7 +11,7 @@ from .forms import ProfileForm
 class ProfileUpdateView(UpdateView):
     model = Profile
     form_class = ProfileForm
-    template_name = 'user_management/profile_form.html'
+    template_name = 'profile_form.html'
     slug_field = 'user__username'
     slug_url_kwarg = 'username'
 
