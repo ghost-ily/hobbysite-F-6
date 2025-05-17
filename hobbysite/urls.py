@@ -25,5 +25,6 @@ urlpatterns = [
     path('commissions/', include('commissions.urls')),
     path('', include('blog.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('accounts.urls'))
+    path('', include('accounts.urls')),
+    path('profile/', include('user_management.urls'))
 ]
