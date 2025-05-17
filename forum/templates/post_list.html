@@ -4,40 +4,19 @@
 
 {% block content %}
 
-	<h2>
-		All recent threads
-	</h2>
-		
-	<h3>
-		Site Feedback
-	</h3>
-	
-	{% for post in object_list %}
-	
-		{% if post.category.name == "Site Feedback" %}
-			<ul>
-				<li>
-					<a href={{post.get_absolute_url}}> {{post.title}} </a>
-				</li>
-			</ul>
-		{% endif %}
-	
-	{% endfor %}
-	
-	<h3>
-		Off Topic
-	</h3>
-	
-	{% for post in object_list %}
-	
-		{% if post.category.name == "Off Topic" %}
-			<ul>
-				<li>
-					<a href={{post.get_absolute_url}}> {{post.title}} </a>
-				</li>
-			</ul>
-		{% endif %}
-	
-	{% endfor %}
-	
+
+{% for category in categories %} 
+	<h3> {{category.name}} </h3>
+		{% for thread in threads %}
+			{% if thread.category == category %}
+				<ul>
+					<li>
+						<a href={{thread.get_absolute_url}}> {{thread.title}} </a>
+					</li>
+				</ul>
+			{% endif %}
+		{% endfor %}
+{% endfor %}
+
+
 {% endblock %}

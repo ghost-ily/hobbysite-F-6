@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import Post, PostCategory
+from .models import Thread, ThreadCategory
 
 class PostAdmin(admin.ModelAdmin):
-    model = Post
+    model = Thread
 
 
 class PostCategoryAdmin(admin.ModelAdmin):
-    model = PostCategory
+    model = Thread
 
 
 # Register your models here.
-admin.site.register(Post, PostAdmin)
-admin.site.register(PostCategory, PostCategoryAdmin)
+admin.site.register(Thread, PostAdmin)
+admin.site.register(ThreadCategory, PostCategoryAdmin)

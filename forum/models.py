@@ -17,10 +17,11 @@ class ThreadCategory(models.Model):
 class Thread(models.Model):
     title = models.CharField(max_length=255)
     entry = models.TextField()
+
     createdOn = models.DateTimeField(auto_now_add=True)
     updatedOn = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(
-        PostCategory,
+        ThreadCategory,
         on_delete=models.SET_NULL,
         null=True,
         related_name='categories'
@@ -39,8 +40,9 @@ class Thread(models.Model):
 class Comment(models.Model):
     thread = models.ForeignKey(
         Thread,
-        on_delete=models.CASCASDE
+        on_delete=models.CASCADE
     )
+
     entry = models.TextField()
     createdOn = models.DateTimeField(auto_now_add=True)
     updatedOn = models.DateTimeField(auto_now=True)
