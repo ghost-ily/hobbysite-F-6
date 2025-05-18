@@ -7,14 +7,9 @@ from .models import ThreadCategory, Thread, Comment
 from .forms import ThreadForm, CommentForm
 
 
-def list_threads(request):
-    threads = Thread.objects.all()
-    categories = ThreadCategory.objects.all()
-    ctx = {
-        'threads':threads,
-        'categories':categories
-    }
-    return render(request, 'post_list.html', ctx)
+class PostListView(ListView):
+    model = ThreadCategory
+    template_name = 'post_list.html'
 
 
 class CreateThreadView(CreateView):

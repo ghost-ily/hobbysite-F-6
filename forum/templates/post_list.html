@@ -8,9 +8,9 @@
 
 <h3> Your threads: </h3>
 
-{% for category in categories %} 
+{% for category in object_list %} 
 	<h3> {{category.name}} - {{category.description}} </h3>
-		{% for thread in threads %}
+		{% for thread in category.categories.all %}
 			{% if thread.category == category %}
 				<ul>
 					<li>
