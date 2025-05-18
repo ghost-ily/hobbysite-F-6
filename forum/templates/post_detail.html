@@ -2,7 +2,12 @@
 
 {% block content %}
 
-	<p> <a href="{% url 'forum:post_list' %}"> <button type="button"> Go back </button> </a> </p>
+	<p> 
+		<a href="{% url 'forum:post_list' %}"> <button type="button"> Go back </button> </a>
+	</p>
+	<p>
+		<a href="{% url 'forum:post_edit' thread.pk %}"> <button type="button"> Edit thread </button> </a>
+	</p>
 
 	<h2>{{thread.title}}</h2>
 	
@@ -16,9 +21,9 @@
 	
 	{% for comment in thread.comments.all %}
 	
-	<p style="text-indent:45px">{{comment.createdOn}}</p>
+	<p style="text-indent:60px">{{comment.createdOn}}</p>
 	
-	<p style="text-indent:45px">{{comment.entry}}</p>
+	<p style="text-indent:60px">{{comment.entry}}</p>
 	
 	{% endfor %}
 	
