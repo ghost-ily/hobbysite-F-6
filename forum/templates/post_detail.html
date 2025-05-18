@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
 
-	<p> <a href="{% url 'post_list' %}"> <button type="button"> Go back </button> </a> </p>
+	<p> <a href="{% url 'forum:post_list' %}"> <button type="button"> Go back </button> </a> </p>
 
 	<h2>{{thread.title}}</h2>
 	
@@ -16,8 +14,20 @@
 	
 	<p style="text-indent:30px">{{thread.entry}}</p>
 	
-	<p style="text-indent:45px">{{thread.comments.createdOn}}</p>
+	{% for comment in thread.comments.all %}
 	
-	<p style="text-indent:45px">{{thread.comments.entry}}</p>
+	<p style="text-indent:45px">{{comment.createdOn}}</p>
+	
+	<p style="text-indent:45px">{{comment.entry}}</p>
+	
+	{% endfor %}
+	
+	<form method="POST">
+		
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Post Comment">
+		
+	</form>
 	
 {% endblock %}

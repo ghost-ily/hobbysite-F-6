@@ -4,7 +4,9 @@
 
 {% block content %}
 
+<a href="{% url 'forum:post_form' %}"> <button type="button"> Create Post </button> </a>
 
+<h3> Your threads: </h3>
 
 {% for category in categories %} 
 	<h3> {{category.name}} - {{category.description}} </h3>
