@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h2>{{ commission.title }}</h2>
+    <p><strong>Description:</strong> {{ commission.description }}</p>
+    <p><strong>Status:</strong> {{ commission.status }}</p>
+    <p><strong>People Required:</strong> {{ total_manpower }}</p>
+    <p><strong>Open Slots:</strong> {{ open_slots }}</p>
+    <p><strong>Created On:</strong> {{ commission.created_on|date:"F j, Y" }}</p>
+    <p><strong>Author:</strong> {{ commission.author.display_name }}</p>
+
+    {% if user.is_authenticated and commission.author.user == user %}
+        <p><a href="{% url 'commissions:commission_update' commission.id %}">Edit Commission</a></p>
+    {% endif %}
+
+    <h3>Jobs</h3>
+    <ul>
+        {% for job in jobs %}
+            <li>
+                <strong>{{ job.role }}</strong> - {{ job.status }}<br>
+                Manpower Required: {{ job.manpower_required }}<br>
+                Accepted: {{ job.accepted_applications_count }}<br>
+
+                {% if user.is_authenticated %}
+                    {% if job.is_full %}
+                        <form method="post" action="#">
+                            <button type="submit" disabled>Job Full</button>
+                        </form>
+                    {% elif job.has_user_applied %}
+                        <p><em>You have already applied to this job.</em></p>
+                    {% else %}
+                        <form method="post" action="{% url 'commissions:apply_to_job' commission.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="job_id" value="{{ job.id }}">
+                            <button type="submit">Apply to Job</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <p><a href="{% url 'login' %}">Log in</a> to apply.</p>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No jobs listed for this commission.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

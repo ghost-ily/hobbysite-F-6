@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ commission.title }}</h1>
+<p><strong>Status:</strong> {{ commission.get_status_display }}</p>
+<p><strong>Author:</strong> {{ commission.author.display_name }}</p>
+<p><strong>Description:</strong> {{ commission.description }}</p>
+<p><strong>Created:</strong> {{ commission.created_on }}</p>
+
+<h2>Jobs</h2>
+<p><strong>Total Manpower Required:</strong> {{ total_manpower }}</p>
+<p><strong>Open Manpower:</strong> {{ open_manpower }}</p>
+
+<ul>
+  {% for job in jobs %}
+    <li>
+      <strong>{{ job.role }}</strong> — {{ job.manpower_required }} people ({{ job.get_status_display }})<br>
+      <em>Accepted Applicants:</em> {{ job_application_counts|get_item:job.id }}
+
+      {% if user.is_authenticated %}
+        {% if job_application_counts|get_item:job.id < job.manpower_required %}
+          <form method="post" action="{% url 'commissions:apply_to_job' job.pk %}">
+            {% csrf_token %}
+            <button type="submit">Apply to this Job</button>
+          </form>
+        {% else %}
+          <p><em>Application closed (full)</em></p>
+        {% endif %}
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
+{% if user == commission.author.user %}
+  <a href="{% url 'commissions:commission_update' commission.pk %}">✏️ Edit this Commission</a>
+{% endif %}
+{% endblock %}

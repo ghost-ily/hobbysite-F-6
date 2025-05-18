@@ -1,0 +1,68 @@
+from django.db import models
+from user_management.models import Profile
+
+
+class Commission(models.Model):
+    STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Full', 'Full'),
+        ('Completed', 'Completed'),
+        ('Discontinued', 'Discontinued'),
+    ]
+
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    description = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Open')
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_on']  # Ascending order by default
+
+    def __str__(self):
+        return f"{self.title} ({self.status})"
+
+
+class Job(models.Model):
+    STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Full', 'Full'),
+    ]
+
+    commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name='jobs')
+    role = models.CharField(max_length=255)
+    manpower_required = models.PositiveIntegerField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Open')
+
+    class Meta:
+        ordering = [
+            'status',              # 'Full' comes after 'Open' because 'F' > 'O'
+            '-manpower_required',  # Descending
+            'role'                 # Ascending
+        ]
+
+    def __str__(self):
+        return f"{self.role} - {self.status} (Needed: {self.manpower_required})"
+
+
+class JobApplication(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    applied_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = [
+            'status',           # 'Accepted' > 'Pending' > 'Rejected' by default string sort
+            '-applied_on'       # Descending by date
+        ]
+
+    def __str__(self):
+        return f"{self.applicant.display_name} applied for {self.job.role} ({self.status})"

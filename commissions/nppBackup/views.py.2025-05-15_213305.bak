@@ -1,0 +1,134 @@
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
+from .models import Commission, Job, JobApplication
+from .forms import CommissionForm, JobFormSet, JobApplicationForm
+from user_management.models import Profile
+from django.views import View
+from django.contrib import messages
+
+class CommissionListView(ListView):
+    model = Commission
+    template_name = 'commissions/commission_list.html'
+    context_object_name = 'commissions'
+
+    def get_queryset(self):
+        return Commission.objects.all().order_by(
+            models.Case(
+                models.When(status='Open', then=0),
+                models.When(status='Full', then=1),
+                models.When(status='Completed', then=2),
+                models.When(status='Discontinued', then=3),
+            ),
+            '-created_on'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            context['user_commissions'] = Commission.objects.filter(author=profile)
+            context['applied_commissions'] = Commission.objects.filter(
+                jobs__applications__applicant=profile
+            ).distinct()
+        return context
+
+
+class CommissionDetailView(DetailView):
+    model = Commission
+    template_name = 'commissions/commission_detail.html'
+    context_object_name = 'commission'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        commission = self.get_object()
+        jobs = commission.jobs.all()
+
+        total_manpower = sum(job.manpower_required for job in jobs)
+        open_manpower = sum(job.manpower_required - job.accepted_applications_count() for job in jobs)
+
+        context['jobs'] = jobs
+        context['total_manpower'] = total_manpower
+        context['open_manpower'] = open_manpower
+        context['application_form'] = JobApplicationForm()
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class CommissionCreateView(CreateView):
+    model = Commission
+    form_class = CommissionForm
+    template_name = 'commissions/commission_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = JobFormSet(self.request.POST or None)
+        return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user.profile
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return redirect('commissions:commission_detail', pk=self.object.pk)
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+@method_decorator(login_required, name='dispatch')
+class CommissionUpdateView(UpdateView):
+    model = Commission
+    form_class = CommissionForm
+    template_name = 'commissions/commission_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = JobFormSet(self.request.POST or None, instance=self.object)
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.save()
+
+            # If all jobs are full, update commission status
+            if all(job.status == 'Full' for job in self.object.jobs.all()):
+                self.object.status = 'Full'
+                self.object.save()
+
+            return redirect('commissions:commission_detail', pk=self.object.pk)
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+class ApplyToJobView(View):
+    def post(self, request, pk):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to apply.")
+            return redirect('commissions:commission_detail', pk=pk)
+
+        profile = request.user.profile
+        job_id = request.POST.get('job_id')
+
+        job = get_object_or_404(Job, id=job_id)
+        commission = job.commission
+
+        # Prevent re-application
+        if JobApplication.objects.filter(job=job, applicant=profile).exists():
+            messages.warning(request, "You have already applied to this job.")
+            return redirect('commissions:commission_detail', pk=pk)
+
+        # Prevent applying to full jobs
+        if job.is_full():
+            messages.error(request, "This job is already full.")
+            return redirect('commissions:commission_detail', pk=pk)
+
+        JobApplication.objects.create(job=job, applicant=profile)
+        messages.success(request, "Application submitted successfully.")
+        return redirect('commissions:commission_detail', pk=pk)

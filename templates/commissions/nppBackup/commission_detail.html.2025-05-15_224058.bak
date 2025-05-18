@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-2">{{ commission.title }}</h1>
+<p class="text-gray-600 mb-4">{{ commission.description }}</p>
+
+<div class="mb-4">
+  <p><strong>Status:</strong> {{ commission.status }}</p>
+  <p><strong>Created:</strong> {{ commission.created_on|date:"M d, Y" }}</p>
+  <p><strong>Updated:</strong> {{ commission.updated_on|date:"M d, Y" }}</p>
+</div>
+
+{% if user == commission.author %}
+  <div class="mb-4">
+    <a href="{% url 'commissions:commission_update' commission.pk %}" class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Edit Commission</a>
+  </div>
+{% endif %}
+
+<h2 class="text-xl font-semibold mb-2">Jobs</h2>
+
+<div class="mb-4">
+  <p><strong>Total Manpower Required:</strong> {{ total_manpower }}</p>
+  <p><strong>Open Slots Remaining:</strong> {{ open_manpower }}</p>
+</div>
+
+{% for job in jobs %}
+  <div class="border rounded p-4 mb-4">
+    <h3 class="text-lg font-bold">{{ job.role }}</h3>
+    <p>Status: {{ job.status }}</p>
+    <p>Manpower Required: {{ job.manpower_required }}</p>
+    
+    {% if user.is_authenticated %}
+      {% if job_application_counts[job.id] >= job.manpower_required %}
+        <p class="text-red-500">This job is full. Applications are closed.</p>
+      {% else %}
+        <form method="POST" action="{% url 'commissions:apply_to_job' job.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-2 hover:bg-green-700">Apply to Job</button>
+        </form>
+      {% endif %}
+    {% endif %}
+  </div>
+{% empty %}
+  <p class="text-gray-500">No jobs listed for this commission.</p>
+{% endfor %}
+
+{% endblock %}

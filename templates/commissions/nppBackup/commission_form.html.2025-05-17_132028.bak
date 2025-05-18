@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>{{ view.title|default:"Create Commission" }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div style="max-width: 600px; margin-bottom: 2em;">
+    {{ form.non_field_errors }}
+    <div style="margin-bottom: 1em;">
+      <label for="{{ form.title.id_for_label }}"><strong>Title:</strong></label><br>
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+
+    <div style="margin-bottom: 1em;">
+      <label for="{{ form.description.id_for_label }}"><strong>Description:</strong></label><br>
+      {{ form.description }}
+      {{ form.description.errors }}
+    </div>
+
+    <div style="margin-bottom: 1em;">
+      <label for="{{ form.status.id_for_label }}"><strong>Status:</strong></label><br>
+      {{ form.status }}
+      {{ form.status.errors }}
+    </div>
+  </div>
+
+  <h3>Jobs</h3>
+  {{ job_formset.management_form }}
+  {% for form in job_formset.forms %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 1em;">
+      {{ form.non_field_errors }}
+
+      <div style="margin-bottom: 0.5em;">
+        <label for="{{ form.role.id_for_label }}"><strong>Role:</strong></label><br>
+        {{ form.role }}
+        {{ form.role.errors }}
+      </div>
+
+      <div style="margin-bottom: 0.5em;">
+        <label for="{{ form.manpower_required.id_for_label }}"><strong>Manpower Required:</strong></label><br>
+        {{ form.manpower_required }}
+        {{ form.manpower_required.errors }}
+      </div>
+
+      <div style="margin-bottom: 0.5em;">
+        <label for="{{ form.status.id_for_label }}"><strong>Status:</strong></label><br>
+        {{ form.status }}
+        {{ form.status.errors }}
+      </div>
+
+      {% if form.fields.DELETE %}
+        <div style="margin-top: 0.5em;">
+          <label>{{ form.DELETE }} Remove</label>
+        </div>
+      {% endif %}
+    </div>
+  {% empty %}
+    <p>No job forms available.</p>
+  {% endfor %}
+
+  {% if job_formset.non_form_errors %}
+    <div class="errors">
+      {{ job_formset.non_form_errors }}
+    </div>
+  {% endif %}
+
+  <button type="submit">Save</button>
+</form>
+{% endblock %}

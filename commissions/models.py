@@ -1,26 +1,89 @@
 from django.db import models
+from django.db.models import Q
+from user_management.models import Profile
+from django.urls import reverse
+
 
 class Commission(models.Model):
+    STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Full', 'Full'),
+        ('Completed', 'Completed'),
+        ('Discontinued', 'Discontinued'),
+    ]
+
     title = models.CharField(max_length=255)
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     description = models.TextField()
-    people_required = models.PositiveIntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Open')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['created_on']  # Sort by creation date (ascending)
+        ordering = ['created_on']  
 
     def __str__(self):
         return self.title
 
-class Comment(models.Model):
-    commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name='comments')
-    entry = models.TextField()
-    created_on = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now=True)
+    def get_absolute_url(self):
+        return reverse('commissions:commission_detail', args=[self.pk])
+
+    def update_status_if_full(self):
+        """Automatically set commission status to 'Full' if all jobs are full."""
+        if self.jobs.exists() and all(job.status == 'Full' for job in self.jobs.all()):
+            self.status = 'Full'
+            self.save()
+
+    def total_manpower_required(self):
+        return sum(job.manpower_required for job in self.jobs.all())
+
+    def total_open_manpower(self):
+        open_count = 0
+        for job in self.jobs.all():
+            accepted = job.applications.filter(status='Accepted').count()
+            open_count += max(0, job.manpower_required - accepted)
+        return open_count
+
+
+class Job(models.Model):
+    STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Full', 'Full'),
+    ]
+
+    commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name='jobs')
+    role = models.CharField(max_length=255)
+    manpower_required = models.PositiveIntegerField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Open')
 
     class Meta:
-        ordering = ['-created_on']  # Sort by creation date (descending)
+        ordering = ['role']
 
     def __str__(self):
-        return f"Comment on {self.commission.title}"
+        return f"{self.role} ({self.status}) for {self.commission.title}"
+
+    def accepted_applications_count(self):
+        return self.applications.filter(status='Accepted').count()
+
+    def is_full(self):
+        return self.accepted_applications_count() >= self.manpower_required
+
+
+class JobApplication(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    applied_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('job', 'applicant')
+        ordering = ['-applied_on']
+
+    def __str__(self):
+        return f"{self.applicant.display_name} - {self.job.role} ({self.status})"

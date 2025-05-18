@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Hobby Site</title>
+		<h2> Hobby Site </h2>
+		{% if request.user.is_authenticated %}
+			<p> Logged in as {{user.username}} </p>
+			<form method="POST" action="{% url 'logout' %}">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<button type="submit">Logout</button>
+			</form>
+		{% endif %}
+    </head>
+    <body>
+        {% block content %}
+
+        {% endblock %}
+    </body>
+</html>
