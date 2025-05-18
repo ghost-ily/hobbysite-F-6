@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}{{post.title}}{% endblock %}
+
 
 {% block content %}
+
+	<p> <a href="{% url 'post_list' %}"> <button type="button"> Go back </button> </a> </p>
 
 	<h2>{{post.title}}</h2>
 	
