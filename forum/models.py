@@ -40,7 +40,8 @@ class Thread(models.Model):
 class Comment(models.Model):
     thread = models.ForeignKey(
         Thread,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='comments'
     )
 
     entry = models.TextField()

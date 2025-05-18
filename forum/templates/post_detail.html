@@ -6,14 +6,18 @@
 
 	<p> <a href="{% url 'post_list' %}"> <button type="button"> Go back </button> </a> </p>
 
-	<h2>{{post.title}}</h2>
+	<h2>{{thread.title}}</h2>
 	
-	<p>Post category: {{post.category.name}} </p>
+	<p>Thread category: {{thread.category.name}} </p>
 	
-	<p>Posted on: {{post.createdOn}}</p>
+	<p>Posted on: {{thread.createdOn}}</p>
 	
-	<p>Last updated on: {{post.updatedOn}}</p>
+	<p>Last updated on: {{thread.updatedOn}}</p>
 	
-	<p style="text-indent:30px">{{post.entry}}</p>
+	<p style="text-indent:30px">{{thread.entry}}</p>
+	
+	<p style="text-indent:45px">{{thread.comments.createdOn}}</p>
+	
+	<p style="text-indent:45px">{{thread.comments.entry}}</p>
 	
 {% endblock %}

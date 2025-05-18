@@ -6,7 +6,7 @@
 
 
 {% for category in categories %} 
-	<h3> {{category.name}} </h3>
+	<h3> {{category.name}} </h3> <h4> - {{category.description}} </h4>
 		{% for thread in threads %}
 			{% if thread.category == category %}
 				<ul>
