@@ -17,22 +17,8 @@ class ProductListView(ListView):
 
 class ProductDetailView(DetailView):
     model = Product
+    form_class = TransactionForm
     template_name = 'detail.html'
-
-    def post(self, request):
-        transaction_form = TransactionForm(request.POST)
-
-        if transaction_form.is_valid():
-            transaction = transaction_form.save(commit=False)
-            transaction.buyer = self.request.user.profile
-            transaction.save()
-
-            return redirect('merchstore:detail')
-        
-        return render(request, 'create.html'), {
-            'form': transaction_form,
-            'view': {'title': 'Add a Product'}
-        }
 
 class ProductCreateView(LoginRequiredMixin, View):
     def get(self, request):
@@ -60,28 +46,10 @@ class ProductCreateView(LoginRequiredMixin, View):
     def get_success_url(self):
         return reverse_lazy('merchstore:detail', kwargs={"pk" : self.kwargs["pk"]})
 
-class ProductUpdateView(LoginRequiredMixin, View):
-    def get(self, request):
-        product_form = ProductForm()
-        return render(request, 'create.html', {
-            'form': product_form,
-            'view': {'title': 'Add a Product'}
-        })
-    
-    def post(self, request):
-        product_form = ProductForm(request.POST)
-
-        if product_form.is_valid():
-            product = product_form.save(commit=False)
-            product.owner = self.request.user.profile
-            product.save()
-
-            return redirect('merchstore:detail')
-        
-        return render(request, 'create.html'), {
-            'form': product_form,
-            'view': {'title': 'Add a Product'}
-        }
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'create.html'
     
     def get_success_url(self):
         return reverse_lazy('merchstore:detail', kwargs={"pk" : self.kwargs["pk"]})
