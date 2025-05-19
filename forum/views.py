@@ -13,12 +13,6 @@ class PostListView(ListView):
     template_name = 'post_list.html'
 
 
-class CreateThreadView(CreateView):
-    form_class = ThreadForm
-    success_url = 'forum:post_list'
-    template_name = 'post_form.html'
-    
-    
 class CreateThreadView(LoginRequiredMixin, CreateView):
     form_class = ThreadForm
     success_url = 'http://localhost:8000/forum/threads'
@@ -53,12 +47,6 @@ class PostDetailView(DetailView):
         return redirect(success_url)
 
 
-class EditThreadView(UpdateView):
-    model = Thread
-    form_class = ThreadForm
-    success_url = 'forum:post_list'
-    
-    
 class EditThreadView(LoginRequiredMixin, UpdateView):
     model = Thread
     form_class = ThreadForm

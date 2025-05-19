@@ -6,18 +6,6 @@
 		<a href="{% url 'forum:post_list' %}"> <button type="button"> Go back </button> </a>
 	</p>
 	
-	<p>
-		<a href="{% url 'forum:post_edit' thread.pk %}"> <button type="button"> Edit thread </button> </a>
-	</p>
-
-	<h2>{{thread.title}}</h2>
-	
-	<p>Thread category: {{thread.category.name}} </p>
-	
-	<p>Posted on: {{thread.createdOn}}</p>
-	
-	<p>Last updated on: {{thread.updatedOn}}</p>
-	
 	{% if user == thread.author %}
 	
 		<p>
@@ -65,12 +53,6 @@
 	<p style="text-indent:60px">{{comment.createdOn}}</p>
 	
 	<p style="text-indent:60px">{{comment.entry}}</p>
-	
-	{% endfor %}
-	
-		<p style="text-indent:60px">{{comment.createdOn}}</p>
-	
-		<p style="text-indent:60px">{{comment.entry}}</p>
 	
 	{% endfor %}
 
