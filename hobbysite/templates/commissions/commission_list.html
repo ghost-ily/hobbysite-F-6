@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h2>Commissions List</h2>
+    <ul>
+        {% for commission in commissions %}
+            <li>
+                <a href="detail/{{commission.id}}">
+                    {{ commission.title }}
+                </a>
+                ({{ commission.created_on|date:"F j, Y" }})
+            </li>
+        {% empty %}
+            <li>No commissions available.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
