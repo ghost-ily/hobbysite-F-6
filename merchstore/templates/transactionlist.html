@@ -9,11 +9,11 @@
 </h2>
 
 {% if request.user.is_authenticated %}
-    <h3>All Products</h3>
+    <h3>All Transactions</h3>
     <ul>
-        {% for product in object_list %}
+        {% for transaction in object_list %}
         <li>
-            <a href="{{ product.get_absolute_url }}">{{ product }}</a>
+            {{ transaction }}
         </li>
         {% endfor %}
     </ul>
