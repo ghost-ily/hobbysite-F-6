@@ -23,12 +23,8 @@
 			{% if forloop.counter0 < 2 %}
 			
 				{% with object=post_list|random %}
-
-					{% if object.category == thread.category and object != thread %}
 		
 					<p style="text-indent:30px"><a href={{object.get_absolute_url}}> {{object.title}} </a></p>
-				
-					{% endif %}
 					
 				{% endwith %}
 		
