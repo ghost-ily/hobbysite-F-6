@@ -3,6 +3,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import ThreadCategory, Thread, Comment
 from .forms import ThreadForm, CommentForm
 
@@ -16,6 +17,18 @@ class CreateThreadView(CreateView):
     form_class = ThreadForm
     success_url = 'forum:post_list'
     template_name = 'post_form.html'
+    
+    
+class CreateThreadView(LoginRequiredMixin, CreateView):
+    form_class = ThreadForm
+    success_url = 'http://localhost:8000/forum/threads'
+    template_name = 'post_form.html'
+    
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.save()
+        success_url = 'http://localhost:8000/forum/threads'
+        return redirect(success_url)        
 
 
 class PostDetailView(DetailView):
@@ -25,6 +38,7 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
+        context['category'] = self.object.category
         return context
         
     def post(self, request, *args, **kwargs):
@@ -43,6 +57,11 @@ class EditThreadView(UpdateView):
     model = Thread
     form_class = ThreadForm
     success_url = 'forum:post_list'
+    
+    
+class EditThreadView(LoginRequiredMixin, UpdateView):
+    model = Thread
+    form_class = ThreadForm
     template_name = 'post_edit.html'
     
     def get_context_data(self, **kwargs):
