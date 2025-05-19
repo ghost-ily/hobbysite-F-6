@@ -1,4 +1,5 @@
 from django.db import models
+from user_management.models import Profile
 
 class ArticleCategory(models.Model):
     name = models.CharField(max_length=255)
