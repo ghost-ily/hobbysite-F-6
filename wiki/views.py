@@ -10,6 +10,10 @@ class WikiArticlesView(ListView):
     model = Article
     template_name = 'wiki_list.html'
     context_object_name = 'articles'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = ArticleCategory.objects.all()
+        return context
 
 class ArticleView(DetailView):
     model = Article
@@ -24,6 +28,7 @@ class ArticleView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
+        context['comment'] = Comment.objects.all()
         return context
     def post(self, request, *args, **kwargs):
         form = CommentForm(request.POST)
