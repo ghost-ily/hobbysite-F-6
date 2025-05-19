@@ -9,7 +9,11 @@
 </h2>
 
 {% if request.user.is_authenticated %}
-    <a href="/merchstore/item/create">Sell your own product!</a>
+    <a href="/merchstore/item/create">Sell your product</a>
+
+    <a href="/merchstore/cart">View your cart</a>
+    
+    <a href="/merchstore/transactions">View your transactions</a>
 
     <h3>Your Products</h3>
     <ul>

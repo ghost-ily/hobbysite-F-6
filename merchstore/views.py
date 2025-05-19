@@ -5,7 +5,7 @@ from django.views.generic.detail import DetailView
 from .models import Product, ProductType, Transaction
 from django.urls import reverse_lazy
 from django.views import View
-from .forms import ProductForm
+from .forms import ProductForm, TransactionForm
 from user_management.models import Profile
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
@@ -18,6 +18,21 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'detail.html'
+
+    def post(self, request):
+        transaction_form = TransactionForm(request.POST)
+
+        if transaction_form.is_valid():
+            transaction = transaction_form.save(commit=False)
+            transaction.buyer = self.request.user.profile
+            transaction.save()
+
+            return redirect('merchstore:detail')
+        
+        return render(request, 'create.html'), {
+            'form': transaction_form,
+            'view': {'title': 'Add a Product'}
+        }
 
 class ProductCreateView(LoginRequiredMixin, View):
     def get(self, request):

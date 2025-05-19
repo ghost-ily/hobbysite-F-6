@@ -12,5 +12,24 @@
         <li>
             Price: P{{ product.price }}
         </li>
+        <li>
+            Stock: {{ product.stock }}
+        </li>
+        <li>
+            It is currently <b>{{ product.status }}</b>.
+        </li>
     </ul>
+
+    {% if request.user.is_authenticated %}
+        {% if product.owner is request.user.profile %}
+            You cannot purchase a product you own. Do you want to edit it?
+        
+        {% else %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Buy">
+            </form>
+        {% endif %}
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Merchstore Transactions List{% endblock %}
+{% block content %}
+<h2>
+    Our Hobby Site Merchandise!
+</h2>
+
+{% if request.user.is_authenticated %}
+    <h3>All Products</h3>
+    <ul>
+        {% for product in object_list %}
+        <li>
+            <a href="{{ product.get_absolute_url }}">{{ product }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+{% endblock %}
