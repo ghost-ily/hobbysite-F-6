@@ -21,15 +21,17 @@
     </ul>
 
     {% if request.user.is_authenticated %}
-        {% if product.owner is request.user.profile %}
-            You cannot purchase a product you own. Do you want to edit it?
+        {% if product.owner is request.user %}
+            You cannot purchase a product you own. <a href="{{ product.get_absolute_url }}/edit">Do you want to edit it?</a>
         
         {% else %}
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form }}
-                <input type="submit" value="Buy">
+                <input type="submit" value="Add to cart">
             </form>
         {% endif %}
     {% endif %}
+
+    You cannot purchase a product you own. <a href="{{ product.get_absolute_url }}/edit">Do you want to edit it?</a>
 {% endblock %}

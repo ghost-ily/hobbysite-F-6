@@ -17,7 +17,7 @@ class ProductType(models.Model):
 class Product(models.Model):
     class State(models.TextChoices):
         AVAILABLE = 'AVAILABLE', "Available"
-        SALE = 'SALE', "On Sale"
+        SALE = 'ON SALE', "On Sale"
         UNAVAILABLE = 'UNAVAILABLE', "Out of Stock"
 
     name = models.CharField(max_length=255)
@@ -57,10 +57,10 @@ class Product(models.Model):
     
 class Transaction(models.Model):
     class DeliveryState(models.TextChoices):
-        CART = 'CART', "On Cart"
-        PAY = 'PAY', "To Pay"
-        SHIP = 'SHIP', "To Ship"
-        RECEIVE = 'RECEIVE', "To Recieve"
+        CART = 'ON CART', "On Cart"
+        PAY = 'TO PAY', "To Pay"
+        SHIP = 'TO SHIP', "To Ship"
+        RECEIVE = 'TO RECEIVE', "To Recieve"
         DELIVERED = 'DELIVERED', "Delivered"
 
     buyer = models.ForeignKey(

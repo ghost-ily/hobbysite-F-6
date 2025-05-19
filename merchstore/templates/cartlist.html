@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Merchstore Transactions List{% endblock %}
+{% block title %}Merchstore Cart List{% endblock %}
 {% block content %}
 <h2>
     Our Hobby Site Merchandise!
@@ -13,7 +13,7 @@
     <ul>
         {% for transaction in object_list %}
         <li>
-            {{ transaction.product.name }} - {{ transaction.buyer }} - {{ transaction.amount }}
+            {{ transaction.product }} - {{ transaction.product.owner }} - {{ transaction.amount }}
         </li>
         {% endfor %}
     </ul>
