@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}{{ product.name }} Details{% endblock %}
+{% block content %}
+    <h4>{{ product.name }}</h4>
+    <ul>
+        <li>
+            {{ product.description }}
+        </li>
+        <li>
+            Price: P{{ product.price }}
+        </li>
+    </ul>
+{% endblock %}

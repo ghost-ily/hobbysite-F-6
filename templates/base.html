@@ -1,12 +1,19 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{% block title %}Title{% endblock %}</title>
-    </head>
-    <body>
-        {% block content %}
+<head>
+    <title>Hobby Site</title>
+</head>
+<body>
+    <h2>Hobby Site</h2>
 
-        {% endblock %}
-    </body>
+    {% if request.user.is_authenticated %}
+        <p>Logged in as {{ user.username }}</p>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</body>
 </html>
