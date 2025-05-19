@@ -22,3 +22,13 @@ class Article(models.Model):
         
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    author = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='author')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='article')
+    entry = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_on']

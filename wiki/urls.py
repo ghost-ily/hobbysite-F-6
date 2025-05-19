@@ -6,4 +6,6 @@ app_name = "wiki"
 urlpatterns = [
     path('articles/', ArticleCatergoryView.as_view(), name='category'),
     path('detail/<int:pk>/', ArticleView.as_view(), name='article-detail')
+    path('detail/edit/', ArticleCreate.as_view(), name='article-create')
+    path('detail/<int:pk>/edit', ArticleUpdate.as_view(), name='article-update')
     ]
