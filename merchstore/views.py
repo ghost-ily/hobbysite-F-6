@@ -20,6 +20,29 @@ class ProductDetailView(DetailView):
     form_class = TransactionForm
     template_name = 'detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = TransactionForm()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.buyer = self.request.user.profile
+            transaction.product.stock = transaction.product.stock - transaction.amount
+            transaction.save()
+
+            return redirect('merchstore:cart')
+        else:
+            self.object_list = self.get_queryset(**kwargs)
+            context = self.get_context_data(**kwargs)
+            context['form'] = form
+            return self.render_to_response(context)
+
+    def get_success_url(self):
+        return redirect('merchstore/cart')
+
 class ProductCreateView(LoginRequiredMixin, View):
     def get(self, request):
         product_form = ProductForm()

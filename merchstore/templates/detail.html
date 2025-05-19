@@ -25,11 +25,15 @@
             You cannot purchase a product you own. <a href="{{ product.get_absolute_url }}/edit">Do you want to edit it?</a>
         
         {% else %}
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form }}
-                <input type="submit" value="Add to cart">
-            </form>
+            {% if product.stock is not 0 %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Add to cart">
+                </form>
+            {% else %}
+                You cannot buy this product.
+            {% endif %}
         {% endif %}
     {% endif %}
 
