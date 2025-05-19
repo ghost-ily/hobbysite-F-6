@@ -17,25 +17,22 @@ class WikiArticlesView(ListView):
 
 class ArticleView(DetailView):
     model = Article
-    all = Article.objects.all()
     fields = '__all__'
     template_name = 'wiki_detail.html'
-    context = {
-              'article': model,
-              'articles': all
-       }
+    context_object_name = 'article'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
-        context['comment'] = Comment.objects.all()
+        context['comments'] = Comment.objects.all()
+        context['articles'] = Article.objects.all()
         return context
     def post(self, request, *args, **kwargs):
         form = CommentForm(request.POST)
         if form.is_valid():
             com = Comment()
             com.author = self.request.user.profile
-            com.article = Article.objects.get(pk=article.id)
+            com.article = form.cleaned_data.get('article')
             com.entry = form.cleaned_data.get('entry')
             com.save()
             return self.get(request, *args, **kwargs)

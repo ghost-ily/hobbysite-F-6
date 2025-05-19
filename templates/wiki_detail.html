@@ -14,15 +14,15 @@
         {{article.entry}}
     </p>
     <p> Category: {{ article.category.name }}</p>
-    <p> Read More:</p>
+    <p></p>
+    <p> Read More from {{ article.category.name }}:</p>
     {% for art in articles %}
-    <p>this article: {{art}}</p>
-        {% if art.id != article.id %}
-        <li>
-        <a href="/wiki/article/{{art.id}}/">{{ art.title }}</a>
-        </li>
-        {% endif %}
-    {% endfor %}
+            {% if art.id != article.id and art.category == article.category%}
+            <li>
+                <a href="/wiki/article/{{art.id}}/">{{ art.title }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
 
     {% if article.owner == request.user.profile %}
         <a href="/wiki/article/{{article.id}}/edit">Update this article, {{request.user.profile}}! </a>
@@ -37,9 +37,11 @@
     </form>
     {% endif %}
 
-    {% for comment in article.comments.all %}
+    {% for comment in comments %}
+    {% if comment.article == article %}
         <p>{{comment.created_on}}</p>
         <p>{{comment.entry}}</p>
+    {% endif %}
     {% endfor %}
 
 <a href="/wiki/articles/">Back to Wiki Articles</a> 
