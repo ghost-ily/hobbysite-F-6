@@ -3,7 +3,9 @@
 
 {% block content %}
 <h2>Create Your Article</h2>
-<ul>
-    
-</ul>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create Article">
+</form>
 {% endblock %}

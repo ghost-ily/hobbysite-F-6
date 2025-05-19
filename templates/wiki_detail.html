@@ -2,16 +2,32 @@
 {% load static %}
 
 {% block content %}
-<h2>{{ article.title }}</h2>
+<head>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+    </head>
+<h2>{{ thisarticle.title }}</h2>
+<img src="{{ object.task_image.url }}" alt="">
 <ul>
+    <p>Article Created On: {{thisarticle.created_on}}</p>
+    <p>Last Updated: {{thisarticle.updated_on}}</p>
     <p>
-        Category:
-        <a href="/wiki/articles/">{{ article.category.name }}</a> 
+        {{thisarticle.entry}}
     </p>
-    <p>Article Created On: {{article.created_on}}</p>
-    <p>Last Updated: {{article.updated_on}}</p>
-    <p>
-        {{article.entry}}
-    </p>
+    <p> Category: {{ thisarticle.category.name }}</p>
+    <p> Read More:</p>
+    {% for article in articles %}
+        {% if article.title is not thisarticle.title %}
+        <li>
+        <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
+        </li>
+        {% endif %}
+    {% endfor %}
+    
+    {% for comment in thread.comments.all %}
+        <p>{{comment.created_on}}</p>
+        <p>{{comment.entry}}</p>
+    {% endfor %}
+    
+<a href="/wiki/articles/">Back to Wiki Articles</a> 
 </ul>
 {% endblock %}

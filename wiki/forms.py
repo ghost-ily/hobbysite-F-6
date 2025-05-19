@@ -1,5 +1,5 @@
 from django import forms
-from .models import Article
+from .models import Article, ArticleCategory, Comment
 
 class ArticleForm(forms.ModelForm):
     class Meta:
@@ -8,5 +8,5 @@ class ArticleForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Article
+        model = Comment
         fields = ['entry']

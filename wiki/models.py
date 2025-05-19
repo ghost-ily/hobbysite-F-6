@@ -17,6 +17,7 @@ class Article(models.Model):
     entry = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    img = models.ImageField(upload_to='images/', null=True)
 
     class Meta:
         ordering = ['-created_on']

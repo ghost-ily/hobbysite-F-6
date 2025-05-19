@@ -8,4 +8,5 @@ class ArticleAdmin(admin.ModelAdmin):
     model = Article
 
 admin.site.register(ArticleCategory, ArticleCategoryAdmin)
-admin.site.register(Article, ArticleAdmin, Comment)
+admin.site.register(Article, ArticleAdmin)
+admin.site.register(Comment)

@@ -10,8 +10,9 @@
     <h3>Your Articles</h3>
     <ul>
         {% for article in articles %}
-        {% if article.owner is request.user.profile %}
+            {% if article.owner is request.user.profile %}
                 <li>
+                    <p>{{ article.owner }}</p>
                     <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
                 </li>
             {% endif %}
@@ -21,7 +22,7 @@
     <h3>All Articles</h3>
     <ul>
         {% for article in articles %}
-        {% if article.owner is not request.user.profile %}
+            {% if article.owner is not request.user.profile %}
                 <li>
                     <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
                 </li>
@@ -30,7 +31,7 @@
     </ul>
 {% else %}
 <ul>
-    {% for category in categories %} 
+    {% for category in categories %}
 	<h3> {{category.name}} - {{category.description}} </h3>
 </ul>
     <h3>Articles:</h3>
@@ -39,5 +40,7 @@
     {% for article in articles %}
     <li><a href="/wiki/article/{{article.id}}/">{{ article.title }}</a></li>
     {% endfor %}
+    {% endfor %}
+    {% endif %}
 </ul>
 {% endblock %}
