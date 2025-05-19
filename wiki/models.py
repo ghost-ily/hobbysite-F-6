@@ -13,6 +13,7 @@ class ArticleCategory(models.Model):
 
 class Article(models.Model):
     title = models.CharField(max_length=255)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='owner',)
     category = models.ForeignKey(ArticleCategory, on_delete=models.CASCADE, related_name='category')
     entry = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)

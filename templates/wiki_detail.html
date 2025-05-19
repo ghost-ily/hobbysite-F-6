@@ -5,29 +5,43 @@
 <head>
     <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
     </head>
-<h2>{{ thisarticle.title }}</h2>
+<h2>{{ article.title }}</h2>
 <img src="{{ object.task_image.url }}" alt="">
 <ul>
-    <p>Article Created On: {{thisarticle.created_on}}</p>
-    <p>Last Updated: {{thisarticle.updated_on}}</p>
+    <p>Article Created On: {{article.created_on}} By: {{article.owner}}</p>
+    <p>Last Updated: {{article.updated_on}}</p>
     <p>
-        {{thisarticle.entry}}
+        {{article.entry}}
     </p>
-    <p> Category: {{ thisarticle.category.name }}</p>
+    <p> Category: {{ article.category.name }}</p>
     <p> Read More:</p>
-    {% for article in articles %}
-        {% if article.title is not thisarticle.title %}
+    {% for art in articles %}
+    <p>this article: {{art}}</p>
+        {% if art.id != article.id %}
         <li>
-        <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
+        <a href="/wiki/article/{{art.id}}/">{{ art.title }}</a>
         </li>
         {% endif %}
     {% endfor %}
+
+    {% if article.owner == request.user.profile %}
+        <a href="/wiki/article/{{article.id}}/edit">Update this article, {{request.user.profile}}! </a>
+    {% endif %}
     
-    {% for comment in thread.comments.all %}
+    {% if request.user.is_authenticated %}
+    <h3>Leave a Comment!</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Comment">
+    </form>
+    {% endif %}
+
+    {% for comment in article.comments.all %}
         <p>{{comment.created_on}}</p>
         <p>{{comment.entry}}</p>
     {% endfor %}
-    
+
 <a href="/wiki/articles/">Back to Wiki Articles</a> 
 </ul>
 {% endblock %}

@@ -5,14 +5,13 @@
 <h2>Wiki Articles</h2>
 
 {% if request.user.is_authenticated %}
-    <a href="/wiki/article/add">Create an article</a>
+    <a href="/wiki/article/add">Create an article, {{request.user.profile}}! </a>
 
     <h3>Your Articles</h3>
     <ul>
         {% for article in articles %}
-            {% if article.owner is request.user.profile %}
+            {% if article.owner == request.user.profile %}
                 <li>
-                    <p>{{ article.owner }}</p>
                     <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
                 </li>
             {% endif %}
@@ -22,23 +21,25 @@
     <h3>All Articles</h3>
     <ul>
         {% for article in articles %}
-            {% if article.owner is not request.user.profile %}
+            {% if article.owner != request.user.profile %}
                 <li>
                     <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
-{% else %}
-<ul>
-    {% for category in categories %}
+    {% else %}
+    <ul>
+        {% for category in categories %}
 	<h3> {{category.name}} - {{category.description}} </h3>
-</ul>
+    </ul>
     <h3>Articles:</h3>
-<ul>
+    <ul>
     <p></p>
     {% for article in articles %}
-    <li><a href="/wiki/article/{{article.id}}/">{{ article.title }}</a></li>
+    <li>
+        <a href="/wiki/article/{{article.id}}/">{{ article.title }}</a>
+    </li>
     {% endfor %}
     {% endfor %}
     {% endif %}
