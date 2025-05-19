@@ -10,6 +10,8 @@
 
 {% if request.user.is_authenticated %}
     <h3>All Transactions</h3>
+    <br>
+    What you are seeing is: Product - Buyer of Product - Amount
     <ul>
         {% for transaction in object_list %}
         <li>
