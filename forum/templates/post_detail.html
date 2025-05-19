@@ -1,17 +1,71 @@
 {% extends 'base.html' %}
 
-{% block title %}{{post.title}}{% endblock %}
-
 {% block content %}
 
-	<h2>{{post.title}}</h2>
+	<p> 
+		<a href="{% url 'forum:post_list' %}"> <button type="button"> Go back </button> </a>
+	</p>
 	
-	<p>Post category: {{post.category.name}} </p>
+	{% if user == thread.author %}
 	
-	<p>Posted on: {{post.createdOn}}</p>
+		<p>
+			<a href="{% url 'forum:post_edit' thread.pk %}"> <button type="button"> Edit thread </button> </a>
+		</p>
 	
-	<p>Last updated on: {{post.updatedOn}}</p>
+	{% endif %}
 	
-	<p style="text-indent:30px">{{post.entry}}</p>
+	Similar posts:
+	
+	{% with post_list=category.categories.all %}
+	
+		{% for post in post_list %}
+	
+			{% if forloop.counter0 < 2 %}
+			
+				{% with object=post_list|random %}
+
+					{% if object.category == thread.category and object != thread %}
+		
+					<p style="text-indent:30px"><a href={{object.get_absolute_url}}> {{object.title}} </a></p>
+				
+					{% endif %}
+					
+				{% endwith %}
+		
+			{% endif %}
+
+		{% endfor %}
+	
+	{% endwith %}
+
+	<h2>{{thread.title}}</h2>
+	
+	<p>Thread category: {{thread.category.name}} </p>
+	
+	<p>Posted on: {{thread.createdOn}}</p>
+	
+	<p>Last updated on: {{thread.updatedOn}}</p>
+	
+	<p style="text-indent:30px">{{thread.entry}}</p>
+	
+	{% for comment in thread.comments.all %}
+	
+	<p style="text-indent:60px">{{comment.createdOn}}</p>
+	
+	<p style="text-indent:60px">{{comment.entry}}</p>
+	
+	{% endfor %}
+
+	{% if request.user.is_authenticated %}
+	
+	<form method="POST">
+		
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Post Comment">
+		
+	</form>
+	
+	{% endif %}
 	
 {% endblock %}

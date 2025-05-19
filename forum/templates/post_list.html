@@ -1,43 +1,54 @@
 {% extends 'base.html' %}
 
-{% block title %}Forum Home{% endblock %}
+
 
 {% block content %}
 
-	<h2>
-		All recent threads
-	</h2>
+<a href="{% url 'forum:post_form' %}"> <button type="button"> Create Post </button> </a>
+
+<h3> Your threads: </h3>
+
+{% for category in object_list %} 
+	
+{% for thread in category.categories.all %}
+			
+	{% if user == thread.author %}
+				
+		<ul>
+		<li>
+			<a href={{thread.get_absolute_url}}> {{thread.title}} </a>
+		</li>
+		</ul>
+					
+	{% endif %}
+			
+{% endfor %}
 		
-	<h3>
-		Site Feedback
-	</h3>
+{% endfor %}
+
+
+{% for category in object_list %} 
+
+<h3> {{category.name}} - {{category.description}} </h3>
 	
-	{% for post in object_list %}
-	
-		{% if post.category.name == "Site Feedback" %}
+	{% for thread in category.categories.all %}
+		
+	{% if thread.category == category %}
+			
+		{% if user != thread.author %}
+				
 			<ul>
 				<li>
-					<a href={{post.get_absolute_url}}> {{post.title}} </a>
+					<a href={{thread.get_absolute_url}}> {{thread.title}} </a>
 				</li>
 			</ul>
 		{% endif %}
-	
+				
+	{% endif %}
+			
 	{% endfor %}
-	
-	<h3>
-		Off Topic
-	</h3>
-	
-	{% for post in object_list %}
-	
-		{% if post.category.name == "Off Topic" %}
-			<ul>
-				<li>
-					<a href={{post.get_absolute_url}}> {{post.title}} </a>
-				</li>
-			</ul>
-		{% endif %}
-	
-	{% endfor %}
-	
+		
+{% endfor %}
+
+
 {% endblock %}

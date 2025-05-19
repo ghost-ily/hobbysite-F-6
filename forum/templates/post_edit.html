@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3> Editing your post: "{{thread.title}}" </h3>
+
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Save edits">
+	</form>
+{% endblock %}
