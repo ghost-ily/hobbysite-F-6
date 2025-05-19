@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<h2>Interests Category</h2>
+<h2>Wiki Articles</h2>
 
 {% if request.user.is_authenticated %}
     <a href="/wiki/article/add">Create an article</a>
@@ -30,9 +30,8 @@
     </ul>
 {% else %}
 <ul>
-    {% for article in articles|slice:":1" %}
-    <p>{{article.category.description}}</p>
-    {% endfor %}
+    {% for category in categories %} 
+	<h3> {{category.name}} - {{category.description}} </h3>
 </ul>
     <h3>Articles:</h3>
 <ul>
