@@ -29,10 +29,10 @@ class Product(models.Model):
         null=True,
         related_name='product_type'
     )
-    owner = models.ForeignKey(
+    seller = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name='owner',
+        related_name='seller',
     )
     stock = models.IntegerField()
 

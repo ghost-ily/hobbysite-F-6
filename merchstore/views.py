@@ -16,16 +16,16 @@ class ProductListView(ListView):
     def get_queryset(self):
         qs = Product.objects.all()
         if self.request.user.is_authenticated:
-            user_products = qs.filter(owner=self.request.user.profile)
-            others = qs.exclude(owner=self.request.user.profile)
+            user_products = qs.filter(seller=self.request.user.profile)
+            others = qs.exclude(seller=self.request.user.profile)
             return list(user_products) + list(others)
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
-            context['user_products'] = Product.objects.filter(owner=self.request.user.profile)
-            context['other_products'] = Product.objects.exclude(owner=self.request.user.profile)
+            context['user_products'] = Product.objects.filter(seller=self.request.user.profile)
+            context['other_products'] = Product.objects.exclude(seller=self.request.user.profile)
         else:
             context['other_products'] = Product.objects.all()
         return context
@@ -64,7 +64,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = 'create.html'
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user.profile
+        form.instance.seller = self.request.user.profile
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -98,7 +98,7 @@ class TransactionListView(LoginRequiredMixin, ListView):
     template_name = 'transactionlist.html'
 
     def get_queryset(self):
-        return Transaction.objects.filter(product__owner=self.request.user.profile)
+        return Transaction.objects.filter(product__seller=self.request.user.profile)
 
 
 def index(request):

@@ -21,7 +21,7 @@
     </ul>
 
     {% if request.user.is_authenticated %}
-        {% if product.owner is request.user %}
+        {% if product.seller is request.user %}
             You cannot purchase a product you own. <a href="{{ product.get_absolute_url }}/edit">Do you want to edit it?</a>
         
         {% else %}

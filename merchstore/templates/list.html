@@ -18,7 +18,7 @@
     <h3>Your Products</h3>
     <ul>
         {% for product in object_list %}
-            {% if product.owner is request.user %}
+            {% if product.seller is request.user %}
                 <li>
                     <a href="{{ product.get_absolute_url }}">{{ product }}</a>
                 </li>
@@ -29,7 +29,7 @@
     <h3>All Products</h3>
     <ul>
         {% for product in object_list %}
-        {% if product.owner is not request.user %}
+        {% if product.seller is not request.user %}
                 <li>
                     <a href="{{ product.get_absolute_url }}">{{ product }}</a>
                 </li>

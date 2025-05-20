@@ -11,11 +11,11 @@
 {% if request.user.is_authenticated %}
     <h3>All Transactions</h3>
     <br>
-    What you are seeing is: Product - Owner of Product - Amount - Status
+    What you are seeing is: Product - Seller of Product - Amount - Status
     <ul>
         {% for transaction in object_list %}
         <li>
-            {{ transaction.product }} - {{ transaction.product.owner }} - {{ transaction.amount }} - {{ transaction.status }}
+            {{ transaction.product }} - {{ transaction.product.seller }} - {{ transaction.amount }} - {{ transaction.status }}
         </li>
         {% endfor %}
     </ul>
