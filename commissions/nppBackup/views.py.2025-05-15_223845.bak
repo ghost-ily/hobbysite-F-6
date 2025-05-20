@@ -1,0 +1,34 @@
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Case, When, Value, IntegerField, Sum, Q
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from .models import Commission, Job, JobApplication
+from user_management.models import Profile
+
+class CommissionListView(ListView):
+    model = Commission
+    template_name = 'commissions/commission_list.html'
+    context_object_name = 'commissions'
+
+    def get_queryset(self):
+        # Custom ordering by status (Open > Full > Completed > Discontinued), then -created_on
+        status_order = Case(
+            When(status='Open', then=Value(0)),
+            When(status='Full', then=Value(1)),
+            When(status='Completed', then=Value(2)),
+            When(status='Discontinued', then=Value(3)),
+            default=Value(4),
+            output_field=IntegerField()
+        )
+        return Commission.objects.all().order_by(status_order, '-created_on')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            profile = get_object_or_404(Profile, user=self.request.user)
+            context['user_commissions'] = Commission.objects.filter(author=profile)
+            context['applied_commissions'] = Commission.objects.filter(
+                job__jobapplication__applicant=profile
+            ).distinct()
+        return context

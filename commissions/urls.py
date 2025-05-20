@@ -1,9 +1,18 @@
 from django.urls import path
-from .views import CommissionListView, CommissionDetailView
+from . import views
+from .views import (
+    CommissionListView, CommissionDetailView,
+    CommissionCreateView, CommissionUpdateView
+)
+
+
 
 app_name = 'commissions'
 
 urlpatterns = [
-    path('list/', CommissionListView.as_view(), name='commission-list'),
-    path('list/detail/<int:pk>/', CommissionDetailView.as_view(), name='commission-detail'),
+    path('list/', CommissionListView.as_view(), name='commission_list'),
+    path('detail/<int:pk>/', CommissionDetailView.as_view(), name='commission_detail'),
+    path('add/', CommissionCreateView.as_view(), name='commission_create'),
+    path('<int:pk>/edit/', CommissionUpdateView.as_view(), name='commission_update'),
+    path('job/<int:pk>/apply/', views.apply_job, name='apply_job'),
 ]

@@ -1,0 +1,122 @@
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
+from django.db.models import Count, Q, Sum, Case, When, Value, IntegerField
+from django.urls import reverse_lazy
+from .models import Commission, Job, JobApplication
+from user_management.models import Profile
+from .forms import CommissionForm, JobApplicationForm, JobForm
+from django.views import View
+from user_management.models import Profile 
+from django.forms.models import inlineformset_factory
+
+class CommissionListView(ListView):
+    model = Commission
+    template_name = 'commissions/commission_list.html'
+    context_object_name = 'commissions'
+
+    def get_queryset(self):
+        return Commission.objects.all().annotate(
+            status_order=Case(
+                When(status='Open', then=Value(0)),
+                When(status='Full', then=Value(1)),
+                When(status='Completed', then=Value(2)),
+                When(status='Discontinued', then=Value(3)),
+                default=Value(4),
+                output_field=IntegerField(),
+            )
+        ).order_by('status_order', '-created_on')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            profile = get_object_or_404(Profile, user=self.request.user)
+
+            # Your commissions where user is the author
+            context['my_commissions'] = Commission.objects.filter(author=profile)
+
+            # Get jobs where this user applied
+            my_jobs = Job.objects.filter(applications__applicant=profile)
+
+            # Get commissions related to those jobs
+            context['my_applications'] = Commission.objects.filter(jobs__in=my_jobs).distinct()
+
+        return context
+        
+class CommissionDetailView(DetailView):
+    model = Commission
+    template_name = 'commissions/commission_detail.html'
+    context_object_name = 'commission'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        commission = self.get_object()
+        jobs = commission.jobs.all()
+
+        total_required = 0
+        total_open = 0
+
+        for job in jobs:
+            accepted = job.applications.filter(status='Accepted').count()
+            job.accepted_count = accepted
+            total_required += job.manpower_required
+            total_open += max(0, job.manpower_required - accepted)
+
+        context['jobs'] = jobs
+        context['total_required'] = total_required
+        context['total_open'] = total_open
+        return context
+
+
+class CommissionCreateView(LoginRequiredMixin, View):
+    def get(self, request):
+        commission_form = CommissionForm()
+        JobFormSet = inlineformset_factory(Commission, Job, form=JobForm, extra=1, can_delete=True)
+        job_formset = JobFormSet()
+        return render(request, 'commissions/commission_form.html', {
+            'form': commission_form,
+            'job_formset': job_formset,
+            'view': {'title': 'Create Commission'},
+        })
+
+    def post(self, request):
+        commission_form = CommissionForm(request.POST)
+        JobFormSet = inlineformset_factory(Commission, Job, form=JobForm, can_delete=True)
+        job_formset = JobFormSet(request.POST)
+
+        if commission_form.is_valid() and job_formset.is_valid():
+            commission = commission_form.save(commit=False)
+            commission.author = request.user.profile  # assuming user has Profile
+            commission.save()
+
+            job_formset.instance = commission
+            job_formset.save()
+
+            return redirect('commissions:commission_detail', pk=commission.pk)
+
+        return render(request, 'commissions/commission_form.html', {
+            'form': commission_form,
+            'job_formset': job_formset,
+            'view': {'title': 'Create Commission'},
+        })
+
+class CommissionUpdateView(LoginRequiredMixin, UpdateView):
+    model = Commission
+    form_class = CommissionForm
+    template_name = 'commissions/commission_form.html'
+
+    def form_valid(self, form):
+        form.instance.updated_on = timezone.now()
+        response = super().form_valid(form)
+
+        # If all jobs in the commission are Full, set commission status to Full
+        jobs = Job.objects.filter(commission=self.object)
+        if jobs.exists() and all(job.status == 'Full' for job in jobs):
+            self.object.status = 'Full'
+            self.object.save()
+
+        return response
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()

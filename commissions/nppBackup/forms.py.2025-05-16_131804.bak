@@ -1,0 +1,37 @@
+from django import forms
+from django.forms import inlineformset_factory
+from .models import Commission, Job, JobApplication, COMMISSION_STATUS_CHOICES, JOB_STATUS_CHOICES
+
+
+class CommissionForm(forms.ModelForm):
+    class Meta:
+        model = Commission
+        fields = ['title', 'description', 'status']
+        widgets = {
+            'status': forms.Select(choices=Commission.STATUS_CHOICES),
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
+class JobForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['role', 'manpower_required', 'status']
+        widgets = {
+            'status': forms.Select(choices=Job.STATUS_CHOICES),
+        }
+
+
+JobFormSet = inlineformset_factory(
+    parent_model=Commission,
+    model=Job,
+    form=JobForm,
+    extra=1,  # allow 1 blank job by default
+    can_delete=True
+)
+
+
+class JobApplicationForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        fields = []  # Applicant and Job will be set in the view
