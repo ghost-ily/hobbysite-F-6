@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Merchstore Cart List{% endblock %}
+{% block content %}
+<h2>
+    Our Hobby Site Merchandise!
+</h2>
+
+{% if request.user.is_authenticated %}
+    <h3>All Transactions</h3>
+    <br>
+    What you are seeing is: Product - Owner of Product - Amount - Status
+    <ul>
+        {% for transaction in object_list %}
+        <li>
+            {{ transaction.product }} - {{ transaction.product.owner }} - {{ transaction.amount }} - {{ transaction.status }}
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+{% endblock %}

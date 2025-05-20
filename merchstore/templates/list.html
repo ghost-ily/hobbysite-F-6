@@ -7,6 +7,38 @@
 <h2>
     Our Hobby Site Merchandise!
 </h2>
+
+{% if request.user.is_authenticated %}
+    <a href="/merchstore/item/create">Sell your product</a>
+
+    <a href="/merchstore/cart">View your cart</a>
+
+    <a href="/merchstore/transactions">View your transactions</a>
+
+    <h3>Your Products</h3>
+    <ul>
+        {% for product in object_list %}
+            {% if product.owner is request.user %}
+                <li>
+                    <a href="{{ product.get_absolute_url }}">{{ product }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h3>All Products</h3>
+    <ul>
+        {% for product in object_list %}
+        {% if product.owner is not request.user %}
+                <li>
+                    <a href="{{ product.get_absolute_url }}">{{ product }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <h3>All Products</h3>
     <ul>
         {% for product in object_list %}
         <li>
@@ -14,4 +46,6 @@
         </li>
         {% endfor %}
     </ul>
+{% endif %}
+
 {% endblock %}
