@@ -15,13 +15,13 @@ class PostListView(ListView):
 
 class CreateThreadView(LoginRequiredMixin, CreateView):
     form_class = ThreadForm
-    success_url = 'http://localhost:8000/forum/threads'
+    success_url = 'forum:post_list'
     template_name = 'post_form.html'
     
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.save()
-        success_url = 'http://localhost:8000/forum/threads'
+        success_url = 'forum:post_list'
         return redirect(success_url)        
 
 
