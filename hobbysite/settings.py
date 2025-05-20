@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*2^@@@ciik21jks$oxzp-h91%l6m0crh$-9kmc94&ova5(tv*r'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['152.42.255.190', 'localhost']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -83,12 +85,8 @@ WSGI_APPLICATION = 'hobbysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'project',
-        'USER': 'leo',
-        'PASSWORD': 'useradmin',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -123,9 +121,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOGIN_REDIRECT_URL = "http://152.42.255.190"
+LOGIN_REDIRECT_URL = "http://localhost:8000"
 
-LOGOUT_REDIRECT_URL = "http://152.42.255.190/accounts/login/"
+LOGOUT_REDIRECT_URL = "http://localhost:8000/accounts/login/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
