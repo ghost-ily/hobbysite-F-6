@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
-from django.conf import settings
-from django.conf.urls.static import static
 import os
 
 load_dotenv()
@@ -47,8 +45,8 @@ INSTALLED_APPS = [
     'blog',
     'forum',
     'commissions',
+    'user_management',
     'accounts',
-    'user_management'
 ]
 
 MIDDLEWARE = [
@@ -123,9 +121,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOGIN_REDIRECT_URL = "http://localhost:8000"
-
-LOGOUT_REDIRECT_URL = "http://localhost:8000/accounts/login/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -134,7 +129,13 @@ STATIC_URL = 'static/'
 STATIC_ROOT = [
     os.path.join(BASE_DIR, 'static')
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL='home'
+LOGOUT_REDIRECT_URL='home'

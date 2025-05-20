@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New Article{% endblock %}
+{% block content %}
+  <h1>Create New Article</h1>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+
+  
+  <a href="{% url 'article-list' %}">Back to article list</a>
+{% endblock %}
