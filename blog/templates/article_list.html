@@ -7,7 +7,7 @@
     
     {% if user.is_authenticated %}    
         <a href="{% url 'article-create' %}">Create Article</a>
-    {% else %}
+    {% endif %}
 
     {% for articlecategory in articlecategories %}
         <h2>{{ articlecategory.name }}</h2>
